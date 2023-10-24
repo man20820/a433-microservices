@@ -1,0 +1,17 @@
+apiVersion: v1
+# membuat configmap
+kind: ConfigMap
+metadata:
+  # nama mongo-configmap di deploy di ns dicoding
+  name: mongo-configmap
+  namespace: dicoding
+data:
+  # isi dari configmap
+  mongo.conf: |
+    storage:
+      dbPath: /data/db
+    net:
+      port: 27017
+      bindIp: 0.0.0.0
+    security:
+      authorization: "enabled"

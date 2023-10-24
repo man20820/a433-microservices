@@ -1,0 +1,28 @@
+apiVersion: v1
+# membuat service
+kind: Service
+metadata:
+  # dengan nama karsajobs-ui-service, di ns dicoding
+  labels:
+    name: karsajobs-ui
+  name: karsajobs-ui-service
+  namespace: dicoding
+spec:
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  # nodeport 30000 dan diakses 8000 di internal
+  - name: 8000app
+    nodePort: 30000
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    name: karsajobs-ui
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
