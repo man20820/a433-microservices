@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+  namespace: dicoding
+spec:
+  selector:
+    matchLabels:
+      app: mongo
+  serviceName: "mongo"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: mongo-config
+        configMap:
+          name: mongo-configmap
+      containers:
+      - name: mongo
+        image: bitnami/mongodb
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-pvc
+          mountPath: /bitnami/mongodb
+        - name: mongo-config
+          mountPath: /etc/mongo
+        env:
+        - name: MONGODB_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_ROOT_USERNAME
+        - name: MONGODB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_ROOT_PASSWORD
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-pvc
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 5Gi
+

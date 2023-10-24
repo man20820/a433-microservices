@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+# membuat deployment
+kind: Deployment
+metadata:
+  # menggunakan label dan nama karsajobs di deploy di namespace dicoding
+  labels:
+    name: karsajobs
+  name: karsajobs
+  namespace: dicoding
+spec:
+  # di deploy dengan 1 replika
+  replicas: 1
+  selector:
+    matchLabels:
+      name: karsajobs
+  template:
+    metadata:
+      labels:
+        name: karsajobs
+    spec:
+      # menggunakan 1 container dengan nama karsajobs, image diambil dari github container registry milik man20820
+      containers:
+      - name: karsajobs
+        image: ghcr.io/man20820/karsajobs:latest
+        ports:
+        # port container 8080 TCP
+        - containerPort: 8080
+          protocol: TCP
+          # limit cpu & memory
+        resources:
+          limits:
+            cpu: 250m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+            # env dari aplikasi
+        env:
+        - name: PORT
+          value: "8080"
+        - name: MONGO_HOST
+          value: "mongo-service"
+        - name: MONGO_USER
+          value: "admin"
+        - name: MONGO_PASS
+          value: "supersecretpassword"

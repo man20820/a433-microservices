@@ -1,0 +1,30 @@
+apiVersion: v1
+# membuat service
+kind: Service
+metadata:
+  # dengan nama karsajobs-service, di ns dicoding
+  labels:
+    name: karsajobs
+  name: karsajobs-service
+  namespace: dicoding
+spec:
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  # nodeport 30001 dan diakses 8080 di internal
+  ports:
+  - name: 8080app
+    nodePort: 30001
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    # mengarah ke pod karsajobs
+    name: karsajobs
+  sessionAffinity: None
+  # tipe nodeport
+  type: NodePort
+status:
+  loadBalancer: {}
