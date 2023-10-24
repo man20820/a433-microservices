@@ -41,6 +41,12 @@ spec:
         - name: MONGO_HOST
           value: "mongo-service"
         - name: MONGO_USER
-          value: "admin"
+          valueFrom:
+            secretKeyRef:
+              key: "MONGO_ROOT_USERNAME"
+              name: "mongo-secret"
         - name: MONGO_PASS
-          value: "supersecretpassword"
+          valueFrom:
+            secretKeyRef:
+              key: "MONGO_ROOT_PASSWORD"
+              name: "mongo-secret"
