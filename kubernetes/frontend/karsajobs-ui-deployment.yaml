@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+# membuat deployment
+kind: Deployment
+metadata:
+  # menggunakan label dan nama karsajobs-ui di deploy di namespace dicoding
+  labels:
+    name: karsajobs-ui
+  name: karsajobs-ui
+  namespace: dicoding
+spec:
+  # di deploy dengan 1 replika
+  replicas: 1
+  selector:
+    matchLabels:
+      name: karsajobs-ui
+  template:
+    metadata:
+      labels:
+        name: karsajobs-ui
+    spec:
+      # menggunakan 1 container dengan nama karsajobs-ui, image diambil dari github container registry milik man20820
+      containers:
+      - name: karsajobs-ui
+        image: ghcr.io/man20820/karsajobs-ui:latest
+        ports:
+        # port container 8000 TCP
+        - containerPort: 8000
+          protocol: TCP
+        resources:
+          # limit cpu & memory
+          limits:
+            cpu: 250m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+
