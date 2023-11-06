@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+# membuat deployment
+kind: Deployment
+metadata:
+  # menggunakan label dan nama shipping-service di deploy di namespace dicoding2
+  labels:
+    name: shipping-service
+  name: shipping-service
+  namespace: dicoding2
+spec:
+  # di deploy dengan 1 replika
+  replicas: 1
+  selector:
+    matchLabels:
+      name: shipping-service
+  template:
+    metadata:
+      labels:
+        name: shipping-service
+    spec:
+      # menggunakan 1 container dengan nama shipping-service, image diambil dari github container registry milik man20820
+      containers:
+      - name: shipping-service
+        image: ghcr.io/man20820/shipping-service:latest
+        ports:
+        # port container 3001 TCP
+        - containerPort: 3001
+          protocol: TCP
+          # limit cpu & memory
+        resources:
+          limits:
+            cpu: 250m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 128Mi
+            # env dari aplikasi
+        env:
+        - name: PORT
+          value: "3001"
+        - name: AMQP_URL
+          value: "amqp://my-release-rabbitmq.default.svc.cluster.local:5672"
+
